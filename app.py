@@ -4,40 +4,51 @@ import streamlit as st
 
 DATA_FILE = "clientes.json"
 
-# Configuración de página para móvil/tablet
 st.set_page_config(
     page_title="Blood Pact AQP", page_icon="💈", layout="centered"
 )
 
-# Estilos CSS personalizados (Tema Negro y Rojo / Blood Pact)
 st.markdown(
     """
     <style>
-    /* Fondo principal de la app */
+    @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap');
+
+    .stApp, p, span, div, label, input {
+        font-family: 'Roboto', sans-serif;
+    }
+    
+    h1, h2, h3 {
+        font-family: 'UnifrakturMaguntia', cursive !important;
+        color: #ff1a1a !important;
+        font-size: 2.2rem !important;
+        letter-spacing: 1px;
+    }
+
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] label {
+        font-family: 'Oswald', sans-serif !important;
+        color: #ff1a1a !important;
+        text-transform: uppercase;
+    }
+
     .stApp {
         background-color: #0d0d0d;
         color: #e0e0e0;
     }
     
-    /* Encabezados y títulos en rojo sangre */
-    h1, h2, h3 {
-        color: #ff1a1a !important;
-        font-family: 'Trebuchet MS', sans-serif;
-    }
-
-    /* Estilo de la barra lateral */
     [data-testid="stSidebar"] {
         background-color: #141414;
         border-right: 2px solid #800000;
     }
 
-    /* Botón principal estilizado en rojo */
     div.stButton > button {
         background-color: #800000;
         color: #ffffff;
         border: 1px solid #ff1a1a;
-        border-radius: 8px;
+        border-radius: 6px;
+        font-family: 'Oswald', sans-serif;
+        text-transform: uppercase;
         font-weight: bold;
+        letter-spacing: 1px;
         transition: 0.3s;
     }
     
@@ -45,17 +56,15 @@ st.markdown(
         background-color: #ff1a1a;
         color: #000000;
         border-color: #ffffff;
-        box-shadow: 0px 0px 10px #ff1a1a;
+        box-shadow: 0px 0px 12px #ff1a1a;
     }
 
-    /* Cajas de alerta e información */
     .stAlert {
         background-color: #1a0000;
         border: 1px solid #800000;
         color: #ff9999;
     }
 
-    /* Campos de texto */
     div[data-baseweb="input"] {
         background-color: #1f1f1f;
         color: #ffffff;
@@ -82,7 +91,11 @@ def guardar_datos(datos):
     json.dump(datos, f, ensure_ascii=False, indent=4)
 
 
-st.sidebar.title("💈 Blood Pact AQP")
+if os.path.exists("Logo-BP-3.png"):
+  st.sidebar.image("Logo-BP-3.png", use_column_width=True)
+else:
+  st.sidebar.title("💈 Blood Pact AQP")
+
 menu = st.sidebar.radio(
     "Navegación",
     [
@@ -121,7 +134,6 @@ if menu == "Cortes y Fidelización":
           st.markdown(f"📱 **Celular:** {cel}")
           st.markdown(f"✂️ **Cortes acumulados:** {cortes}")
 
-          # Renderizado de tarjeta de 10 posiciones
           meta = 10
           tarjeta_str = ""
 
@@ -129,15 +141,14 @@ if menu == "Cortes y Fidelización":
             if i <= cortes:
               tarjeta_str += "✂️ "
             elif i == 5:
-              tarjeta_str += "🎁 "  # Regalo 5to corte (50% desc)
+              tarjeta_str += "🎁 "
             elif i == 10:
-              tarjeta_str += "🎁 "  # Regalo 10mo corte (Gratis)
+              tarjeta_str += "🎁 "
             else:
               tarjeta_str += "⚪ "
 
           st.markdown(f"**Tarjeta:**\n\n{tarjeta_str}")
 
-          # Mensajes informativos de progreso
           if cortes < 5:
             restantes = 5 - cortes
             st.info(
@@ -156,10 +167,9 @@ if menu == "Cortes y Fidelización":
                 "🎉 ¡Felicidades! Este corte es **TOTALMENTE GRATIS** 🎁"
             )
 
-          # Botón directo para sumar el corte
           if st.button(f"➕ Sumar 1 Corte a {nombre}", key=f"btn_{cel}"):
             if clientes[cel]["cortes"] >= 10:
-              clientes[cel]["cortes"] = 1  # Reinicia a 1 el nuevo ciclo
+              clientes[cel]["cortes"] = 1
             else:
               clientes[cel]["cortes"] += 1
 
@@ -224,7 +234,7 @@ elif menu == "Eliminar Cliente":
         "Selecciona el cliente a eliminar", list(opciones_eliminar.keys())
     )
 
-    if st.button("⚠️️ Eliminar Definitivamente", type="primary"):
+    if st.button("⚠️ Eliminar Definitivamente", type="primary"):
       cel_a_borrar = opciones_eliminar[cliente_a_borrar_label]
       nombre_borrado = clientes[cel_a_borrar]["nombre"]
       del clientes[cel_a_borrar]
