@@ -4,6 +4,68 @@ import streamlit as st
 
 DATA_FILE = "clientes.json"
 
+# Configuración de página para móvil/tablet
+st.set_page_config(
+    page_title="Blood Pact AQP", page_icon="💈", layout="centered"
+)
+
+# Estilos CSS personalizados (Tema Negro y Rojo / Blood Pact)
+st.markdown(
+    """
+    <style>
+    /* Fondo principal de la app */
+    .stApp {
+        background-color: #0d0d0d;
+        color: #e0e0e0;
+    }
+    
+    /* Encabezados y títulos en rojo sangre */
+    h1, h2, h3 {
+        color: #ff1a1a !important;
+        font-family: 'Trebuchet MS', sans-serif;
+    }
+
+    /* Estilo de la barra lateral */
+    [data-testid="stSidebar"] {
+        background-color: #141414;
+        border-right: 2px solid #800000;
+    }
+
+    /* Botón principal estilizado en rojo */
+    div.stButton > button {
+        background-color: #800000;
+        color: #ffffff;
+        border: 1px solid #ff1a1a;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    
+    div.stButton > button:hover {
+        background-color: #ff1a1a;
+        color: #000000;
+        border-color: #ffffff;
+        box-shadow: 0px 0px 10px #ff1a1a;
+    }
+
+    /* Cajas de alerta e información */
+    .stAlert {
+        background-color: #1a0000;
+        border: 1px solid #800000;
+        color: #ff9999;
+    }
+
+    /* Campos de texto */
+    div[data-baseweb="input"] {
+        background-color: #1f1f1f;
+        color: #ffffff;
+        border-radius: 6px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def cargar_datos():
   if not os.path.exists(DATA_FILE):
@@ -162,7 +224,7 @@ elif menu == "Eliminar Cliente":
         "Selecciona el cliente a eliminar", list(opciones_eliminar.keys())
     )
 
-    if st.button("⚠️ Eliminar Definitivamente", type="primary"):
+    if st.button("⚠️️ Eliminar Definitivamente", type="primary"):
       cel_a_borrar = opciones_eliminar[cliente_a_borrar_label]
       nombre_borrado = clientes[cel_a_borrar]["nombre"]
       del clientes[cel_a_borrar]
