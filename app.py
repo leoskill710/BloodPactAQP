@@ -135,7 +135,7 @@ clientes = cargar_datos()
 
 if menu == "Cortes y Fidelización":
   st.title("✂️ Cortes y Fidelización")
-  st.subheader("Busca a tu cliente y súmele su corte al toque 💈")
+  st.subheader("Busca tu nombre y suma tu corte")
 
   busqueda = st.text_input(
       "🔍 Buscar por nombre o número de celular", value=""
@@ -182,91 +182,4 @@ if menu == "Cortes y Fidelización":
                 " para tu 50% DE DESCUENTO 🎁</div>",
                 unsafe_allow_html=True,
             )
-          elif cortes == 5:
-            st.markdown(
-                '<div class="caja-premio">🎉 ¡Felicidades! Tienes 50% DE'
-                " DESCUENTO en este corte 🎁</div>",
-                unsafe_allow_html=True,
-            )
-          elif cortes < 10:
-            restantes = 10 - cortes
-            st.markdown(
-                f'<div class="caja-progreso">Te faltan {restantes} corte(s)'
-                " para tu CORTE GRATIS 🎁</div>",
-                unsafe_allow_html=True,
-            )
-          elif cortes == 10:
-            st.markdown(
-                '<div class="caja-premio">🎉 ¡Felicidades! Este corte es'
-                " TOTALMENTE GRATIS 🎁</div>",
-                unsafe_allow_html=True,
-            )
-
-          if st.button(f"➕ Sumar 1 Corte a {nombre}", key=f"btn_{cel}"):
-            if clientes[cel]["cortes"] >= 10:
-              clientes[cel]["cortes"] = 1
-            else:
-              clientes[cel]["cortes"] += 1
-
-            guardar_datos(clientes)
-            st.success(
-                f"¡Corte registrado a {nombre}! Total:"
-                f" {clientes[cel]['cortes']}"
-            )
-            st.rerun()
-
-          st.markdown("---")
-
-    if not encontrado and busqueda != "":
-      st.warning("No se encontró a nadie con ese nombre o número, meu.")
-
-elif menu == "Registrar Cliente":
-  st.title("➕ Registrar Cliente")
-  st.subheader("Mete los datos del cliente nuevo para activarlo en la pichanga")
-
-  with st.form("form_cliente_principal"):
-    celular_input = st.text_input("Celular del Cliente")
-    nombre_input = st.text_input("Nombre y Apellido")
-    cortes_input = st.number_input(
-        "Cortes iniciales (opcional)", min_value=0, max_value=10, step=1, value=0
-    )
-    submit_btn = st.form_submit_button("Guardar Registro")
-
-    if submit_btn:
-      if celular_input and nombre_input:
-        if celular_input in clientes:
-          st.warning("¡Ese número ya está registrado, chequea bien!")
-        else:
-          clientes[celular_input] = {
-              "nombre": nombre_input,
-              "cortes": int(cortes_input),
-          }
-          guardar_datos(clientes)
-          st.success(
-              f"¡Listo! {nombre_input} fue registrado con {cortes_input}"
-              " cortes."
-          )
-      else:
-        st.error("Rellena el celular y el nombre, causa.")
-
-elif menu == "Eliminar Cliente":
-  st.title("🗑️ Eliminar Cliente")
-  st.subheader("¿Algún cliente se fue? Mándalo de baja de una vez")
-
-  if not clientes:
-    st.info("No hay clientes registrados para borrar.")
-  else:
-    opciones_eliminar = {
-        f"{info['nombre']} ({cel})": cel for cel, info in clientes.items()
-    }
-    cliente_a_borrar_label = st.selectbox(
-        "Selecciona el cliente a eliminar", list(opciones_eliminar.keys())
-    )
-
-    if st.button("⚠️ Eliminar Definitivamente", type="primary"):
-      cel_a_borrar = opciones_eliminar[cliente_a_borrar_label]
-      nombre_borrado = clientes[cel_a_borrar]["nombre"]
-      del clientes[cel_a_borrar]
-      guardar_datos(clientes)
-      st.success(f"Fuera de la lista: {nombre_borrado} fue eliminado.")
-      st.rerun()
+          elif cortes ==
