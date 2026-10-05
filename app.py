@@ -22,22 +22,22 @@ def guardar_datos(datos):
 
 st.sidebar.title("💈 Blood Pact AQP")
 menu = st.sidebar.radio(
-    "Acción",
+    "Navegación",
     [
-        "🔍 Buscar y Sumar Corte",
-        "➕ Registrar Cliente",
-        "🗑️ Eliminar Cliente",
+        "Gestión de Puntos",
+        "Nuevo Cliente",
+        "Administración",
     ],
 )
 
 clientes = cargar_datos()
 
-if menu == "🔍 Buscar y Sumar Corte":
-  st.title("✂️ Buscar y Sumar Cortes")
-  st.subheader("Busca al cliente y súmale su punto al instante")
+if menu == "Gestión de Puntos":
+  st.title("✂️ Gestión de Puntos")
+  st.subheader("Busca al cliente y registra sus cortes al instante")
 
   busqueda = st.text_input(
-      "🔍 Escribe el nombre o celular del cliente", value=""
+      "🔍 Buscar por nombre o número de celular", value=""
   ).lower()
 
   if not clientes:
@@ -75,7 +75,6 @@ if menu == "🔍 Buscar y Sumar Corte":
           st.markdown(f"**Tarjeta:**\n\n{tarjeta_str}")
           st.info(f"Te faltan {restantes} cortes para tu CORTE GRATIS")
 
-          # Botón directo para sumar el corte
           if st.button(f"➕ Sumar 1 Corte a {nombre}", key=f"btn_{cel}"):
             clientes[cel]["cortes"] += 1
             guardar_datos(clientes)
@@ -92,17 +91,17 @@ if menu == "🔍 Buscar y Sumar Corte":
           "No se encontró ningún cliente con ese nombre o número."
       )
 
-elif menu == "➕ Registrar Cliente":
-  st.title("➕ Registrar Nuevo Cliente")
-  st.subheader("Ingresa los datos del cliente para agregarlo a la base")
+elif menu == "Nuevo Cliente":
+  st.title("➕ Registro de Cliente")
+  st.subheader("Ingresa los datos para dar de alta a un nuevo cliente")
 
   with st.form("form_cliente_principal"):
     celular_input = st.text_input("Celular del Cliente")
-    nombre_input = st.text_input("Nombre del Cliente")
+    nombre_input = st.text_input("Nombre y Apellido")
     cortes_input = st.number_input(
         "Cortes iniciales (opcional)", min_value=0, step=1, value=0
     )
-    submit_btn = st.form_submit_button("Guardar Cliente")
+    submit_btn = st.form_submit_button("Guardar Registro")
 
     if submit_btn:
       if celular_input and nombre_input:
@@ -123,20 +122,18 @@ elif menu == "➕ Registrar Cliente":
       else:
         st.error("Por favor completa el celular y el nombre.")
 
-elif menu == "🗑️ Eliminar Cliente":
-  st.title("🗑️ Eliminar Cliente")
-  st.subheader(
-      "Selecciona al cliente que deseas borrar definitivamente del sistema"
-  )
+elif menu == "Administración":
+  st.title("⚙️ Administración de Base de Datos")
+  st.subheader("Panel para la baja de registros del sistema")
 
   if not clientes:
-    st.info("No hay clientes para eliminar.")
+    st.info("No hay clientes para administrar.")
   else:
     opciones_eliminar = {
         f"{info['nombre']} ({cel})": cel for cel, info in clientes.items()
     }
     cliente_a_borrar_label = st.selectbox(
-        "Selecciona el cliente", list(opciones_eliminar.keys())
+        "Selecciona el cliente a eliminar", list(opciones_eliminar.keys())
     )
 
     if st.button("⚠️ Eliminar Definitivamente", type="primary"):
@@ -144,5 +141,7 @@ elif menu == "🗑️ Eliminar Cliente":
       nombre_borrado = clientes[cel_a_borrar]["nombre"]
       del clientes[cel_a_borrar]
       guardar_datos(clientes)
-      st.success(f"El cliente {nombre_borrado} ha sido eliminado correctamente.")
+      st.success(
+          f"El registro de {nombre_borrado} ha sido eliminado correctamente."
+      )
       st.rerun()
