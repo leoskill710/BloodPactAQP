@@ -24,17 +24,17 @@ st.sidebar.title("💈 Blood Pact AQP")
 menu = st.sidebar.radio(
     "Navegación",
     [
-        "Gestión de Puntos",
-        "Nuevo Cliente",
-        "Administración",
+        "Cortes y Fidelización",
+        "Registrar Cliente",
+        "Eliminar Cliente",
     ],
 )
 
 clientes = cargar_datos()
 
-if menu == "Gestión de Puntos":
-  st.title("✂️ Gestión de Puntos")
-  st.subheader("Busca al cliente y registra sus cortes al instante")
+if menu == "Cortes y Fidelización":
+  st.title("✂️ Cortes y Fidelización")
+  st.subheader("Busca al cliente y registra sus puntos al instante")
 
   busqueda = st.text_input(
       "🔍 Buscar por nombre o número de celular", value=""
@@ -91,8 +91,8 @@ if menu == "Gestión de Puntos":
           "No se encontró ningún cliente con ese nombre o número."
       )
 
-elif menu == "Nuevo Cliente":
-  st.title("➕ Registro de Cliente")
+elif menu == "Registrar Cliente":
+  st.title("➕ Registrar Cliente")
   st.subheader("Ingresa los datos para dar de alta a un nuevo cliente")
 
   with st.form("form_cliente_principal"):
@@ -122,12 +122,14 @@ elif menu == "Nuevo Cliente":
       else:
         st.error("Por favor completa el celular y el nombre.")
 
-elif menu == "Administración":
-  st.title("⚙️ Administración de Base de Datos")
-  st.subheader("Panel para la baja de registros del sistema")
+elif menu == "Eliminar Cliente":
+  st.title("🗑️ Eliminar Cliente")
+  st.subheader(
+      "Selecciona al cliente que deseas borrar definitivamente del sistema"
+  )
 
   if not clientes:
-    st.info("No hay clientes para administrar.")
+    st.info("No hay clientes para eliminar.")
   else:
     opciones_eliminar = {
         f"{info['nombre']} ({cel})": cel for cel, info in clientes.items()
