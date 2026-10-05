@@ -20,7 +20,7 @@ st.markdown(
     
     h1, h2, h3, .stMarkdown h3 {
         font-family: 'Cinzel', serif !important;
-        color: #ff1a1a !important;
+        color: #e63946 !important;
         letter-spacing: 3px;
         text-transform: uppercase;
         font-weight: 900 !important;
@@ -28,7 +28,7 @@ st.markdown(
 
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] label {
         font-family: 'Cinzel', serif !important;
-        color: #ff1a1a !important;
+        color: #e63946 !important;
         letter-spacing: 2px;
         text-transform: uppercase;
         font-weight: 900 !important;
@@ -41,13 +41,13 @@ st.markdown(
     
     [data-testid="stSidebar"] {
         background-color: #141414;
-        border-right: 2px solid #800000;
+        border-right: 2px solid #a61c1c;
     }
 
     div.stButton > button {
-        background-color: #800000;
+        background-color: #a61c1c;
         color: #ffffff;
-        border: 1px solid #ff1a1a;
+        border: 1px solid #e63946;
         border-radius: 6px;
         font-family: 'Montserrat', sans-serif;
         letter-spacing: 1.5px;
@@ -57,10 +57,10 @@ st.markdown(
     }
     
     div.stButton > button:hover {
-        background-color: #ff1a1a;
+        background-color: #e63946;
         color: #000000;
         border-color: #ffffff;
-        box-shadow: 0px 0px 12px #ff1a1a;
+        box-shadow: 0px 0px 12px #e63946;
     }
 
     div[data-baseweb="input"] {
@@ -69,30 +69,30 @@ st.markdown(
         border-radius: 6px;
     }
 
-    /* Plomo rata con bordes y texto en rojo sangre para acumulación */
+    /* Plomo rata con bordes y texto en rojo exacto del logo para acumulación */
     .caja-progreso {
         background-color: #18181a;
-        border: 2px solid #550000;
+        border: 2px solid #661010;
         padding: 14px 16px;
         border-radius: 8px;
-        color: #ff3333;
+        color: #ff4d4d;
         font-weight: 900;
         font-size: 1.1rem;
         margin-bottom: 10px;
         letter-spacing: 1px;
     }
 
-    /* Colores invertidos (Rojo sangre total) cuando se alcanza el canje */
+    /* Colores invertidos (Rojo del logo total) cuando se alcanza el canje */
     .caja-premio {
-        background-color: #800000;
-        border: 2px solid #ff1a1a;
+        background-color: #a61c1c;
+        border: 2px solid #e63946;
         padding: 14px 16px;
         border-radius: 8px;
         color: #ffffff;
         font-weight: 900;
         font-size: 1.15rem;
         margin-bottom: 10px;
-        box-shadow: 0px 0px 14px #ff1a1a;
+        box-shadow: 0px 0px 14px #e63946;
         letter-spacing: 1px;
     }
     </style>
@@ -134,7 +134,7 @@ menu = st.sidebar.radio(
 clientes = cargar_datos()
 
 if menu == "Cortes y Fidelización":
-  st.title("✂️️ Cortes y Fidelización")
+  st.title("✂️ Cortes y Fidelización")
   st.subheader("Busca tu nombre y suma tu corte")
 
   busqueda = st.text_input(
