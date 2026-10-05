@@ -1,113 +1,156 @@
-import streamlit as st
 import json
 import os
+import streamlit as st
 
-# Configuración de página para celular
-st.set_page_config(page_title="Blood Pact AQP", page_icon="✂️", layout="centered")
+DATA_FILE = "clientes.json"
 
-# Nombre del archivo donde guardaremos los clientes localmente
-DB_FILE = "clientes.json"
 
-# Cargar clientes desde archivo JSON
-def cargar_clientes():
-    if os.path.exists(DB_FILE):
-        with open(DB_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return {
-        "906867617": {"nombre": "Leonardo Acosta", "cortes": 2},
-        "987496121": {"nombre": "Cliente Ejemplo", "cortes": 5}
+def cargar_datos():
+  if not os.path.exists(DATA_FILE):
+    return {}
+  with open(DATA_FILE, "r", encoding="utf-8") as f:
+    try:
+      return json.load(f)
+    except json.JSONDecodeError:
+      return {}
+
+
+def guardar_datos(datos):
+  with open(DATA_FILE, "w", encoding="utf-8") as f:
+    json.dump(datos, f, ensure_ascii=False, indent=4)
+
+
+st.sidebar.title("💈 Blood Pact AQP")
+menu = st.sidebar.radio(
+    "Acción",
+    [
+        "Agregar o Buscar Cliente",
+        "Registrar Corte",
+        "Eliminar Cliente",
+    ],  # <-- Añadimos la opción aquí
+)
+
+clientes = cargar_datos()
+
+if menu == "Agregar o Buscar Cliente":
+  st.title("✂️ Blood Pact AQP")
+  st.subheader("Programa de Fidelidad de Barbería")
+
+  st.markdown("### 📋 Lista de Clientes")
+  busqueda = st.text_input(
+      "🔍 Buscar cliente por nombre o teléfono", value=""
+  ).lower()
+
+  if not clientes:
+    st.info(
+        "Aún no hay clientes registrados. Usa el formulario de la izquierda"
+        " para agregar uno."
+    )
+  else:
+    for cel, info in clientes.items():
+      nombre = info.get("nombre", "")
+      cortes = info.get("cortes", 0)
+
+      if (
+          busqueda in nombre.lower()
+          or busqueda in cel
+          or busqueda == ""
+      ):
+        with st.container():
+          st.markdown(f"### 👤 {nombre}")
+          st.markdown(f"📱 **Celular:** {cel}")
+          st.markdown(f"✂️ **Cortes acumulados:** {cortes}")
+
+          # Lógica visual de la tarjeta (ej: cada 10 cortes un premio)
+          meta = 10
+          cortes_actuales = cortes % meta
+          tijeras = "✂️" * cortes_actuales
+          regalo = "🎁" if cortes_actuales >= 5 else "🎁"
+          restantes = meta - cortes_actuales
+
+          tarjeta_str = ""
+          for i in range(meta):
+            if i < cortes_actuales:
+              tarjeta_str += "✂️️ "
+            elif i == 4:
+              tarjeta_str += "🎁 "
+            else:
+              tarjeta_str += "⚪ "
+
+          st.markdown(f"**Tarjeta:**\n\n{tarjeta_str}")
+          st.info(f"Te faltan {restantes} cortes para tu CORTE GRATIS")
+          st.markdown("---")
+
+  st.sidebar.markdown("---")
+  st.sidebar.subheader("Registrar / Actualizar Cliente")
+  with st.sidebar.form("form_cliente"):
+    celular_input = st.text_input("Celular del Cliente")
+    nombre_input = st.text_input("Nombre del Cliente")
+    cortes_input = st.number_input(
+        "Cortes acumulados", min_value=0, step=1, value=0
+    )
+    submit_btn = st.form_submit_button("Guardar Cliente")
+
+    if submit_btn:
+      if celular_input and nombre_input:
+        clientes[celular_input] = {
+            "nombre": nombre_input,
+            "cortes": int(cortes_input),
+        }
+        guardar_datos(clientes)
+        st.sidebar.success(f"¡Cliente {nombre_input} guardado con éxito!")
+        st.rerun()
+      else:
+        st.sidebar.error("Por favor completa el celular y el nombre.")
+
+elif menu == "Registrar Corte":
+  st.title("➕ Registrar Corte")
+  st.subheader("Suma un corte a un cliente existente")
+
+  if not clientes:
+    st.warning("No hay clientes registrados en la base de datos.")
+  else:
+    # Creamos una lista de opciones legible para el selector
+    opciones_clientes = {
+        f"{info['nombre']} ({cel})": cel for cel, info in clientes.items()
     }
+    cliente_seleccionado_label = st.selectbox(
+        "Selecciona al cliente", list(opciones_clientes.keys())
+    )
 
-# Guardar clientes en archivo JSON
-def guardar_clientes(data):
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+    if st.button("Sumar 1 Corte"):
+      cel_elegido = opciones_clientes[cliente_seleccionado_label]
+      clientes[cel_elegido]["cortes"] += 1
+      guardar_datos(clientes)
+      st.success(
+          f"¡Corte sumado con éxito a"
+          f" {clientes[cel_elegido]['nombre']}! ✂️ Total:"
+          f" {clientes[cel_elegido]['cortes']}"
+      )
+      st.rerun()
 
-if "clientes" not in st.session_state:
-    st.session_state["clientes"] = cargar_clientes()
+elif menu == "Eliminar Cliente":
+  st.title("🗑️ Eliminar Cliente")
+  st.subheader(
+      "Selecciona al cliente que deseas eliminar permanentemente del sistema"
+  )
 
-# Título Principal
-st.title("✂️ Blood Pact AQP")
-st.caption("Programa de Fidelidad de Barbería")
-
-# Función para calcular los emojis y mensaje de recompensa
-def calcular_fidelidad(c):
-    if c == 0:
-        return "⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪ ⚪", "Te faltan 10 cortes para tu CORTE GRATIS"
-    elif c < 5:
-        dibujo = ("✂️ " * c) + ("⚪ " * (5 - c)) + "⚪ ⚪ ⚪ ⚪ ⚪"
-        estado = f"Te faltan {5 - c} cortes para tu 50% de descuento"
-        return dibujo, estado
-    elif c == 5:
-        return "✂️ ✂️ ✂️ ✂️ ✂️ ⚪ ⚪ ⚪ ⚪ ⚪", "¡Tienes un 50% de descuento disponible! 🔥"
-    elif c < 10:
-        dibujo = "✂️ ✂️ ✂️ ✂️ 🎁 " + ("✂️ " * (c - 5)) + ("⚪ " * (10 - c))
-        estado = f"Te faltan {10 - c} cortes para tu CORTE GRATIS"
-        return dibujo, estado
-    else:
-        return "✂️ ✂️ ✂️ ✂️️ 🎁 ✂️ ✂️ ✂️ ✂️ 🥳", "¡Corte GRATIS disponible! 🥳"
-
-# Menú lateral para registrar/actualizar cortes
-st.sidebar.header("💈 Registrar / Actualizar")
-
-opcion = st.sidebar.radio("Acción", ["Agregar o Buscar Cliente", "Registrar Corte"])
-
-if opcion == "Agregar o Buscar Cliente":
-    celular = st.sidebar.text_input("Celular del Cliente")
-    nombre = st.sidebar.text_input("Nombre del Cliente")
-    cortes_iniciales = st.sidebar.number_input("Cortes acumulados", min_value=0, max_value=20, value=0, step=1)
-    
-    if st.sidebar.button("Guardar Cliente"):
-        if celular and nombre:
-            st.session_state["clientes"][celular] = {"nombre": nombre, "cortes": int(cortes_iniciales)}
-            guardar_clientes(st.session_state["clientes"])
-            st.sidebar.success(f"¡Cliente {nombre} guardado!")
-            st.rerun()
-        else:
-            st.sidebar.error("Por favor ingresa nombre y celular.")
-
-elif opcion == "Registrar Corte":
-    if st.session_state["clientes"]:
-        lista_celulares = list(st.session_state["clientes"].keys())
-        cel_select = st.sidebar.selectbox("Selecciona Cliente", lista_celulares, format_func=lambda x: f"{st.session_state['clientes'][x]['nombre']} ({x})")
-        
-        col1, col2 = st.sidebar.columns(2)
-        with col1:
-            if st.button("➕ 1 Corte"):
-                st.session_state["clientes"][cel_select]["cortes"] += 1
-                guardar_clientes(st.session_state["clientes"])
-                st.success("¡Corte sumado!")
-                st.rerun()
-        with col2:
-            if st.button("🔄 Canjear"):
-                st.session_state["clientes"][cel_select]["cortes"] = 0
-                guardar_clientes(st.session_state["clientes"])
-                st.warning("¡Tarjeta reiniciada!")
-                st.rerun()
-
-# Buscador en la pantalla principal
-st.subheader("📋 Lista de Clientes")
-busqueda = st.text_input("🔍 Buscar cliente por nombre o teléfono")
-
-clientes_mostrar = st.session_state["clientes"]
-if busqueda:
-    clientes_mostrar = {
-        k: v for k, v in clientes_mostrar.items() 
-        if busqueda.lower() in v["nombre"].lower() or busqueda in k
+  if not clientes:
+    st.info("No hay clientes para eliminar.")
+  else:
+    opciones_eliminar = {
+        f"{info['nombre']} ({cel})": cel for cel, info in clientes.items()
     }
+    cliente_a_borrar_label = st.selectbox(
+        "Cliente a eliminar", list(opciones_eliminar.keys())
+    )
 
-# Renderizar Tarjetas de Fidelidad
-for cel, datos in clientes_mostrar.items():
-    c = datos["cortes"]
-    dibujo, estado = calcular_fidelidad(c)
-    
-    with st.container(border=True):
-        st.write(f"### 👤 {datos['nombre']}")
-        st.caption(f"📱 Celular: {cel}")
-        st.write(f"**Cortes acumulados:** `{c}`")
-        st.markdown(f"**Tarjeta:**\n### {dibujo}")
-        
-        if c == 5 or c >= 10:
-            st.success(f"🎉 **{estado}**")
-        else:
-            st.info(estado)
+    if st.button(
+        "⚠️ Eliminar Definitivamente", type="primary"
+    ):
+      cel_a_borrar = opciones_eliminar[cliente_a_borrar_label]
+      nombre_borrado = clientes[cel_a_borrar]["nombre"]
+      del clientes[cel_a_borrar]
+      guardar_datos(clientes)
+      st.success(f"El cliente {nombre_borrado} ha sido eliminado correctamente.")
+      st.rerun()
