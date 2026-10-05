@@ -60,23 +60,35 @@ st.markdown(
         box-shadow: 0px 0px 12px #ff1a1a;
     }
 
-    /* Corrección de alertas: fondo negro oscuro, borde rojo sangre y texto sobrio */
-    .stAlert {
-        background-color: #121212 !important;
-        border: 1px solid #550000 !important;
-        color: #e0e0e0 !important;
-        border-radius: 6px;
-    }
-    
-    .stAlert p {
-        color: #ff4d4d !important;
-        font-weight: bold;
-    }
-
     div[data-baseweb="input"] {
         background-color: #1f1f1f;
         color: #ffffff;
         border-radius: 6px;
+    }
+
+    /* Contenedores personalizados para estados de fidelización (Plomo rata y Rojo sangre) */
+    .caja-progreso {
+        background-color: #1c1c1e;
+        border: 2px solid #660000;
+        padding: 12px 15px;
+        border-radius: 8px;
+        color: #ff4d4d;
+        font-weight: bold;
+        font-size: 1.05rem;
+        margin-bottom: 10px;
+    }
+
+    /* Caja de premio invertida (Colores invertidos al canjear) */
+    .caja-premio {
+        background-color: #800000;
+        border: 2px solid #ff1a1a;
+        padding: 12px 15px;
+        border-radius: 8px;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+        box-shadow: 0px 0px 10px #ff1a1a;
     }
     </style>
     """,
@@ -99,8 +111,10 @@ def guardar_datos(datos):
     json.dump(datos, f, ensure_ascii=False, indent=4)
 
 
-if os.path.exists("Logo-BP-3.png"):
-  st.sidebar.image("Logo-BP-3.png", use_column_width=True)
+if os.path.exists("Gemini_Generated_Image_qsi7xrqsi7xrqsi7.jpg"):
+  st.sidebar.image(
+      "Gemini_Generated_Image_qsi7xrqsi7xrqsi7.jpg", use_column_width=True
+  )
 else:
   st.sidebar.title("💈 Blood Pact AQP")
 
@@ -159,20 +173,29 @@ if menu == "Cortes y Fidelización":
 
           if cortes < 5:
             restantes = 5 - cortes
-            st.info(
-                f"Te faltan {restantes} corte(s) para tu **50% DE DESCUENTO**"
-                " 🎁"
+            st.markdown(
+                f'<div class="caja-progreso">Te faltan {restantes} corte(s)'
+                " for tu 50% DE DESCUENTO 🎁</div>",
+                unsafe_allow_html=True,
             )
           elif cortes == 5:
-            st.success("🎉 ¡Felicidades! Tienes **50% DE DESCUENTO** en este corte 🎁")
+            st.markdown(
+                '<div class="caja-premio">🎉 ¡Felicidades! Tienes 50% DE'
+                " DESCUENTO en este corte 🎁</div>",
+                unsafe_allow_html=True,
+            )
           elif cortes < 10:
             restantes = 10 - cortes
-            st.info(
-                f"Te faltan {restantes} corte(s) para tu **CORTE GRATIS** 🎁"
+            st.markdown(
+                f'<div class="caja-progreso">Te faltan {restantes} corte(s)'
+                " para tu CORTE GRATIS 🎁</div>",
+                unsafe_allow_html=True,
             )
           elif cortes == 10:
-            st.success(
-                "🎉 ¡Felicidades! Este corte es **TOTALMENTE GRATIS** 🎁"
+            st.markdown(
+                '<div class="caja-premio">🎉 ¡Felicidades! Este corte es'
+                " TOTALMENTE GRATIS 🎁</div>",
+                unsafe_allow_html=True,
             )
 
           if st.button(f"➕ Sumar 1 Corte a {nombre}", key=f"btn_{cel}"):
