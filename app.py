@@ -59,27 +59,51 @@ if menu == "Cortes y Fidelización":
           st.markdown(f"📱 **Celular:** {cel}")
           st.markdown(f"✂️ **Cortes acumulados:** {cortes}")
 
+          # Renderizado de tarjeta de 10 posiciones
           meta = 10
-          cortes_actuales = cortes % meta
-          restantes = meta - cortes_actuales
-
           tarjeta_str = ""
-          for i in range(meta):
-            if i < cortes_actuales:
-              tarjeta_str += "✂ "
-            elif i == 4:
-              tarjeta_str += "🎁 "
+
+          for i in range(1, meta + 1):
+            if i <= cortes:
+              tarjeta_str += "✂️ "
+            elif i == 5:
+              tarjeta_str += "🎁 "  # Regalo 5to corte (50% desc)
+            elif i == 10:
+              tarjeta_str += "🎁 "  # Regalo 10mo corte (Gratis)
             else:
               tarjeta_str += "⚪ "
 
           st.markdown(f"**Tarjeta:**\n\n{tarjeta_str}")
-          st.info(f"Te faltan {restantes} cortes para tu CORTE GRATIS")
 
+          # Mensajes informativos de progreso
+          if cortes < 5:
+            restantes = 5 - cortes
+            st.info(
+                f"Te faltan {restantes} corte(s) para tu **50% DE DESCUENTO**"
+                " 🎁"
+            )
+          elif cortes == 5:
+            st.success("🎉 ¡Felicidades! Tienes **50% DE DESCUENTO** en este corte 🎁")
+          elif cortes < 10:
+            restantes = 10 - cortes
+            st.info(
+                f"Te faltan {restantes} corte(s) para tu **CORTE GRATIS** 🎁"
+            )
+          elif cortes == 10:
+            st.success(
+                "🎉 ¡Felicidades! Este corte es **TOTALMENTE GRATIS** 🎁"
+            )
+
+          # Botón directo para sumar el corte
           if st.button(f"➕ Sumar 1 Corte a {nombre}", key=f"btn_{cel}"):
-            clientes[cel]["cortes"] += 1
+            if clientes[cel]["cortes"] >= 10:
+              clientes[cel]["cortes"] = 1  # Reinicia a 1 el nuevo ciclo
+            else:
+              clientes[cel]["cortes"] += 1
+
             guardar_datos(clientes)
             st.success(
-                f"¡Corte sumado con éxito a {nombre}! Total:"
+                f"¡Corte registrado a {nombre}! Total:"
                 f" {clientes[cel]['cortes']}"
             )
             st.rerun()
@@ -99,7 +123,7 @@ elif menu == "Registrar Cliente":
     celular_input = st.text_input("Celular del Cliente")
     nombre_input = st.text_input("Nombre y Apellido")
     cortes_input = st.number_input(
-        "Cortes iniciales (opcional)", min_value=0, step=1, value=0
+        "Cortes iniciales (opcional)", min_value=0, max_value=10, step=1, value=0
     )
     submit_btn = st.form_submit_button("Guardar Registro")
 
