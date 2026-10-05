@@ -11,24 +11,27 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@700;900&display=swap');
 
+    /* Forzar tipografía fuerte y robusta en toda la aplicación */
     .stApp, p, span, div, label, input {
-        font-family: 'Roboto', sans-serif;
+        font-family: 'Montserrat', sans-serif !important;
     }
     
-    h1, h2, h3 {
-        font-family: 'Anton', sans-serif !important;
+    h1, h2, h3, .stMarkdown h3 {
+        font-family: 'Cinzel', serif !important;
         color: #ff1a1a !important;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
         text-transform: uppercase;
+        font-weight: 900 !important;
     }
 
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] label {
-        font-family: 'Anton', sans-serif !important;
+        font-family: 'Cinzel', serif !important;
         color: #ff1a1a !important;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
         text-transform: uppercase;
+        font-weight: 900 !important;
     }
 
     .stApp {
@@ -46,10 +49,10 @@ st.markdown(
         color: #ffffff;
         border: 1px solid #ff1a1a;
         border-radius: 6px;
-        font-family: 'Anton', sans-serif;
-        letter-spacing: 1px;
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        font-weight: bold;
+        font-weight: 900;
         transition: 0.3s;
     }
     
@@ -66,29 +69,31 @@ st.markdown(
         border-radius: 6px;
     }
 
-    /* Contenedores personalizados para estados de fidelización (Plomo rata y Rojo sangre) */
+    /* Plomo rata con bordes y texto en rojo sangre para acumulación */
     .caja-progreso {
-        background-color: #1c1c1e;
-        border: 2px solid #660000;
-        padding: 12px 15px;
+        background-color: #18181a;
+        border: 2px solid #550000;
+        padding: 14px 16px;
         border-radius: 8px;
-        color: #ff4d4d;
-        font-weight: bold;
-        font-size: 1.05rem;
+        color: #ff3333;
+        font-weight: 900;
+        font-size: 1.1rem;
         margin-bottom: 10px;
+        letter-spacing: 1px;
     }
 
-    /* Caja de premio invertida (Colores invertidos al canjear) */
+    /* Colores invertidos (Rojo sangre total) cuando se alcanza el canje */
     .caja-premio {
         background-color: #800000;
         border: 2px solid #ff1a1a;
-        padding: 12px 15px;
+        padding: 14px 16px;
         border-radius: 8px;
         color: #ffffff;
-        font-weight: bold;
-        font-size: 1.1rem;
+        font-weight: 900;
+        font-size: 1.15rem;
         margin-bottom: 10px;
-        box-shadow: 0px 0px 10px #ff1a1a;
+        box-shadow: 0px 0px 14px #ff1a1a;
+        letter-spacing: 1px;
     }
     </style>
     """,
@@ -111,10 +116,9 @@ def guardar_datos(datos):
     json.dump(datos, f, ensure_ascii=False, indent=4)
 
 
-if os.path.exists("Gemini_Generated_Image_qsi7xrqsi7xrqsi7.jpg"):
-  st.sidebar.image(
-      "Gemini_Generated_Image_qsi7xrqsi7xrqsi7.jpg", use_column_width=True
-  )
+logo_nombre = "Gemini_Generated_Image_ogzja4ogzja4ogzj.jpg"
+if os.path.exists(logo_nombre):
+  st.sidebar.image(logo_nombre, use_column_width=True)
 else:
   st.sidebar.title("💈 Blood Pact AQP")
 
@@ -175,7 +179,7 @@ if menu == "Cortes y Fidelización":
             restantes = 5 - cortes
             st.markdown(
                 f'<div class="caja-progreso">Te faltan {restantes} corte(s)'
-                " for tu 50% DE DESCUENTO 🎁</div>",
+                " para tu 50% DE DESCUENTO 🎁</div>",
                 unsafe_allow_html=True,
             )
           elif cortes == 5:
