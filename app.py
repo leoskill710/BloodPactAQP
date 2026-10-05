@@ -11,22 +11,23 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto:wght@400;700&display=swap');
 
     .stApp, p, span, div, label, input {
         font-family: 'Roboto', sans-serif;
     }
     
     h1, h2, h3 {
-        font-family: 'UnifrakturMaguntia', cursive !important;
+        font-family: 'Anton', sans-serif !important;
         color: #ff1a1a !important;
-        font-size: 2.2rem !important;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
     }
 
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] label {
-        font-family: 'Oswald', sans-serif !important;
+        font-family: 'Anton', sans-serif !important;
         color: #ff1a1a !important;
+        letter-spacing: 1px;
         text-transform: uppercase;
     }
 
@@ -45,10 +46,10 @@ st.markdown(
         color: #ffffff;
         border: 1px solid #ff1a1a;
         border-radius: 6px;
-        font-family: 'Oswald', sans-serif;
+        font-family: 'Anton', sans-serif;
+        letter-spacing: 1px;
         text-transform: uppercase;
         font-weight: bold;
-        letter-spacing: 1px;
         transition: 0.3s;
     }
     
@@ -59,10 +60,17 @@ st.markdown(
         box-shadow: 0px 0px 12px #ff1a1a;
     }
 
+    /* Corrección de alertas: fondo negro oscuro, borde rojo sangre y texto sobrio */
     .stAlert {
-        background-color: #1a0000;
-        border: 1px solid #800000;
-        color: #ff9999;
+        background-color: #121212 !important;
+        border: 1px solid #550000 !important;
+        color: #e0e0e0 !important;
+        border-radius: 6px;
+    }
+    
+    .stAlert p {
+        color: #ff4d4d !important;
+        font-weight: bold;
     }
 
     div[data-baseweb="input"] {
