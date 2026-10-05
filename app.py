@@ -116,7 +116,7 @@ def guardar_datos(datos):
     json.dump(datos, f, ensure_ascii=False, indent=4)
 
 
-logo_nombre = "Gemini_Generated_Image_ogzja4ogzja4ogzj.jpg"
+logo_nombre = "Gemini_Generated_Image_ogzja4ogzja4ogzj-removebg-preview.png"
 if os.path.exists(logo_nombre):
   st.sidebar.image(logo_nombre, use_column_width=True)
 else:
@@ -135,14 +135,14 @@ clientes = cargar_datos()
 
 if menu == "Cortes y Fidelización":
   st.title("✂️ Cortes y Fidelización")
-  st.subheader("Busca al cliente y registra sus puntos al instante")
+  st.subheader("Busca a tu cliente y súmele su corte al toque 💈")
 
   busqueda = st.text_input(
       "🔍 Buscar por nombre o número de celular", value=""
   ).lower()
 
   if not clientes:
-    st.info("Aún no hay clientes registrados en el sistema.")
+    st.info("Aún no hay clientes registrados en la base.")
   else:
     encontrado = False
     for cel, info in clientes.items():
@@ -218,13 +218,11 @@ if menu == "Cortes y Fidelización":
           st.markdown("---")
 
     if not encontrado and busqueda != "":
-      st.warning(
-          "No se encontró ningún cliente con ese nombre o número."
-      )
+      st.warning("No se encontró a nadie con ese nombre o número, meu.")
 
 elif menu == "Registrar Cliente":
   st.title("➕ Registrar Cliente")
-  st.subheader("Ingresa los datos para dar de alta a un nuevo cliente")
+  st.subheader("Mete los datos del cliente nuevo para activarlo en la pichanga")
 
   with st.form("form_cliente_principal"):
     celular_input = st.text_input("Celular del Cliente")
@@ -237,9 +235,7 @@ elif menu == "Registrar Cliente":
     if submit_btn:
       if celular_input and nombre_input:
         if celular_input in clientes:
-          st.warning(
-              "Ya existe un cliente registrado con este número de celular."
-          )
+          st.warning("¡Ese número ya está registrado, chequea bien!")
         else:
           clientes[celular_input] = {
               "nombre": nombre_input,
@@ -247,20 +243,18 @@ elif menu == "Registrar Cliente":
           }
           guardar_datos(clientes)
           st.success(
-              f"¡Cliente {nombre_input} registrado correctamente con"
-              f" {cortes_input} cortes!"
+              f"¡Listo! {nombre_input} fue registrado con {cortes_input}"
+              " cortes."
           )
       else:
-        st.error("Por favor completa el celular y el nombre.")
+        st.error("Rellena el celular y el nombre, causa.")
 
 elif menu == "Eliminar Cliente":
   st.title("🗑️ Eliminar Cliente")
-  st.subheader(
-      "Selecciona al cliente que deseas borrar definitivamente del sistema"
-  )
+  st.subheader("¿Algún cliente se fue? Mándalo de baja de una vez")
 
   if not clientes:
-    st.info("No hay clientes para eliminar.")
+    st.info("No hay clientes registrados para borrar.")
   else:
     opciones_eliminar = {
         f"{info['nombre']} ({cel})": cel for cel, info in clientes.items()
@@ -274,7 +268,5 @@ elif menu == "Eliminar Cliente":
       nombre_borrado = clientes[cel_a_borrar]["nombre"]
       del clientes[cel_a_borrar]
       guardar_datos(clientes)
-      st.success(
-          f"El registro de {nombre_borrado} ha sido eliminado correctamente."
-      )
+      st.success(f"Fuera de la lista: {nombre_borrado} fue eliminado.")
       st.rerun()
